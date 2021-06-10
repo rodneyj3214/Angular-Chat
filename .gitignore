@@ -1,0 +1,7 @@
+
+resp/
+
+server/uploads/perfiles/*
+!server/uploads/perfiles/images.md
+
+server/node_modules/
