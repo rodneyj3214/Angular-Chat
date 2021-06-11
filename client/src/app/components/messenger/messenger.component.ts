@@ -22,7 +22,7 @@ export class MessengerComponent implements OnInit {
   public de;
   public url;
   public data_message;
-  public socket = io('http://localhost:4201');
+  public socket = io('http://localhost:3000');
   public usuarios: Array<any> = [];
   public mensajes;
   public message;
@@ -41,21 +41,20 @@ export class MessengerComponent implements OnInit {
     this.url = "http://localhost:3000/api/";
     this.de = this.identity._id;
     this.socket.on('new-message', function (data) {
-      console.log("Rodney");
       var data_all = {
-        de: data.message.user.de,
-        para: data.message.user.para,
-        msm: data.message.user.msm,
-        createAt: data.message.user.createAt,
+        de: data.message.de,
+        para: data.message.para,
+        msm: data.message.msm,
+        // createAt: data.message.createAt,
       }
-      this._userService.get_user(data.message.user.de).subscribe(
+      this._userService.get_user(data.message.de).subscribe(
         response => {
           this.socket.on('get-identity', function (data) {
             console.log(data);
             this.identity = data;
           }.bind(this));
-          if (data.message.user.de != this.de) {
-            console.log(data.message.user.msm);
+          if (data.message.de != this.de) {
+            console.log(data.message.msm);
             Push.create(response.user.nombre, {
               body: data.message.user.msm,
               icon: this.url + 'usuarios/img/' + response.user.imagen,
@@ -130,7 +129,7 @@ export class MessengerComponent implements OnInit {
     this._messageService.send_message(this.message).subscribe(
       response => {
         //SEND MESSAGE
-        this.socket.emit('save-message', response.message);
+        this.socket.emit('save-message', this.message);
 
         this.scrollToBottom();
         this.text = "";
