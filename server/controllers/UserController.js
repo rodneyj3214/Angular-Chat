@@ -7,7 +7,6 @@ function registro(req, res) {
 
     var params = req.body;
     var user = new User();
-
     user.nombre = params.nombre;
     user.email = params.email;
     user.password = params.password;
@@ -17,14 +16,12 @@ function registro(req, res) {
     user.facebook = 'undefined';
     user.twitter = 'undefined';
     user.github = 'undefined';
-
     user.estado = true;
 
 
     if (params.password) {
         bcrypt.hash(params.password, null, null, function (err, hash) {
             user.password = hash;
-
             User.findOne({ email: params.email }, (err, user_email) => {
                 if (user_email) {
                     res.status(403).send({ message: "El correo ya esta en uso" });
@@ -81,7 +78,6 @@ function login(req, res) {
 
 function get_user(req, res) {
     let id = req.params.id;
-
     User.findById(id, function (err, user) {
         if (!err) {
             if (user) {
@@ -89,7 +85,6 @@ function get_user(req, res) {
             } else {
                 res.status(500).send({ message: "Usuario no encontrado" });
             }
-
         }
         else {
             res.status(500).send({ message: "Error en el servidor" });

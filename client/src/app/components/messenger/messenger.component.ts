@@ -1,3 +1,5 @@
+
+
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { io } from 'socket.io-client';
 import { Router } from '@angular/router';
@@ -17,7 +19,7 @@ export class MessengerComponent implements OnInit {
 
   @ViewChild('scrollMe', { static: false }) private myScrollContainer: ElementRef;
 
-
+  
   public identity: any = {};
   public de;
   public url;
@@ -32,14 +34,19 @@ export class MessengerComponent implements OnInit {
   public last_msm;
   text = "";
 
+  /**
+   * 
+   * @param _userService  : Helpfull Service to user
+   * @param _messageService : 
+   * @param _router 
+   */
   constructor(private _userService: UserService,
     private _messageService: MessageService,
     private _router: Router
   ) {
     this.identity = this._userService.getIdentity();
-    console.log(this.identity);
+
     this.url = "http://localhost:3000/api/";
-    this.de = this.identity._id;
     this.socket.on('new-message', function (data) {
       var data_all = {
         de: data.message.de,
@@ -78,6 +85,8 @@ export class MessengerComponent implements OnInit {
     if (!this.identity) {
       this._router.navigate(['']);
     } else {
+      this.de = this.identity._id;
+
       this._userService.listar('').subscribe(
         response => {
           this.usuarios = response.users;
@@ -94,11 +103,16 @@ export class MessengerComponent implements OnInit {
       }.bind(this));
     }
   }
+  /**
+   * 
+   */
   scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     } catch (err) { }
   }
+
+  
   listar(para) {
 
     this._userService.get_messages(para, this.de).subscribe(
@@ -169,9 +183,6 @@ export class MessengerComponent implements OnInit {
     localStorage.removeItem('identity');
     this.token = null;
     this.identity = null;
-
-
-
     this._router.navigate(['']);
   }
 

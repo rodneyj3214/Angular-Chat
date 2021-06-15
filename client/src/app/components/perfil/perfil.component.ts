@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { io } from 'socket.io-client';
 import { UserService } from 'src/app/services/user.service';
@@ -31,8 +33,16 @@ export class PerfilComponent implements OnInit {
   public file: File;
   public imgselected: String | ArrayBuffer;
 
-  constructor(private _userService: UserService,
+  formPerfilIn = this.formBuilder.group({
+    nombre: '',
+    email: '',
+    password: ''
+  });
+
+  constructor(private formBuilder: FormBuilder,
+    private _userService: UserService,
     private _router: Router,
+    private sanitizer: DomSanitizer
   ) {
     this.identity = this._userService.getIdentity();
     this.url = "http://localhost:3000/api/";
@@ -64,40 +74,46 @@ export class PerfilComponent implements OnInit {
       )
     }
   }
+
+  /**
+   * 
+   * @param event : 
+   */
   imgSelected(event: HtmlInputEvent) {
-    if (event.target.files && event.target.files[0]) {
-      this.file = <File>event.target.files[0];
-
-      const reader = new FileReader();
-      reader.onload = e => this.imgselected = reader.result;
-      reader.readAsDataURL(this.file);
-
+    console.log("Entre");
+    if (event.target.files) {
+      if (event.target.files[0]) {
+        this.file = <File>event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = e => this.imgselected = reader.result;
+        reader.readAsDataURL(this.file);
+      }
     }
   }
 
-  onSubmit(configForm) {
-    if (configForm.valid) {
+  perfilForm() {
+    if (this.formPerfilIn.valid) {
 
-      if (configForm.value.password != undefined) {
+      if (this.formPerfilIn.value.password != undefined) {
 
 
-        if (configForm.value.password != configForm.value.confirm_pass) {
+        if (this.formPerfilIn.value.password != this.formPerfilIn.value.confirm_pass) {
           this.msm_confirm_pass = "Las contraseñas no coinciden";
         } else {
 
           this.msm_confirm_pass = "";
           this.data_send = {
             _id: this.datos_user._id,
-            nombre: configForm.value.nombre,
-            telefono: configForm.value.telefono,
+            nombre: this.formPerfilIn.value.nombre,
+            telefono: this.formPerfilIn.value.telefono,
             imagen: this.file,
-            password: configForm.value.password,
-            bio: configForm.value.bio,
-            twitter: configForm.value.twitter,
-            facebook: configForm.value.facebook,
-            github: configForm.value.github,
+            password: this.formPerfilIn.value.password,
+            bio: this.formPerfilIn.value.bio,
+            twitter: this.formPerfilIn.value.twitter,
+            facebook: this.formPerfilIn.value.facebook,
+            github: this.formPerfilIn.value.github,
 
-            estado: configForm.value.estado,
+            estado: this.formPerfilIn.value.estado,
 
           }
 
@@ -128,15 +144,15 @@ export class PerfilComponent implements OnInit {
         this.msm_confirm_pass = "";
         this.data_send = {
           _id: this.datos_user._id,
-          nombre: configForm.value.nombre,
-          telefono: configForm.value.telefono,
+          nombre: this.formPerfilIn.value.nombre,
+          telefono: this.formPerfilIn.value.telefono,
           imagen: this.file,
-          bio: configForm.value.bio,
-          twitter: configForm.value.twitter,
-          facebook: configForm.value.facebook,
-          github: configForm.value.github,
+          bio: this.formPerfilIn.value.bio,
+          twitter: this.formPerfilIn.value.twitter,
+          facebook: this.formPerfilIn.value.facebook,
+          github: this.formPerfilIn.value.github,
 
-          estado: configForm.value.estado,
+          estado: this.formPerfilIn.value.estado,
 
         }
         this._userService.update_config(this.data_send).subscribe(
