@@ -52,7 +52,8 @@ function login(req, res) {
         if (err) {
             res.status(500).send({ message: "Error en el servidor" });
         } else {
-            if (!user) {console.log(params.email);
+            if (!user) {
+                console.log(params.email);
                 res.status(404).send({ message: "Usuario no existe" });
             } else {
                 console.log(params);
@@ -184,7 +185,7 @@ function editar_config(req, res) {
     var id = req.params['id'];
     var params = req.body;
 
-    if (req.files) {
+    if (req.files.imagen) {
         if (params.password) {
             console.log('1');
 
@@ -206,10 +207,10 @@ function editar_config(req, res) {
         } else {
 
             console.log('2');
-            let imagen_path = req.files.imagen.path;
-            let name = imagen_path.split('\\');
-            let img_name = name[2];
 
+            let imagen_path = req.files.imagen.path;
+            let name = imagen_path.split('/');
+            let img_name = name[2];
 
             User.findByIdAndUpdate({ _id: id }, { nombre: params.nombre, imagen: img_name, telefono: params.telefono, twitter: params.twitter, facebook: params.facebook, github: params.github, bio: params.bio, estado: params.estado }, (err, user_edit) => {
                 if (err) {
@@ -227,7 +228,7 @@ function editar_config(req, res) {
                 console.log('3');
                 User.findByIdAndUpdate({ _id: id }, { nombre: params.nombre, password: hash, pais: params.pais, telefono: params.telefono, twitter: params.twitter, facebook: params.facebook, github: params.github, bio: params.bio, estado: params.estado }, (err, user_edit) => {
                     if (err) {
-                        res.status(500).send({ message: "Error en el servidor"+ err});
+                        res.status(500).send({ message: "Error en el servidor" + err });
                     } else {
                         if (user_edit) {
                             res.status(200).send({ user: user_edit });
@@ -239,7 +240,7 @@ function editar_config(req, res) {
             console.log('4');
             User.findByIdAndUpdate({ _id: id }, { nombre: params.nombre, pais: params.pais, telefono: params.telefono, twitter: params.twitter, facebook: params.facebook, github: params.github, bio: params.bio, estado: params.estado }, (err, user_edit) => {
                 if (err) {
-                    res.status(500).send({ message: "Error en el servidor"});
+                    res.status(500).send({ message: "Error en el servidor" });
                 } else {
                     if (user_edit) {
                         res.status(200).send({ user: user_edit });

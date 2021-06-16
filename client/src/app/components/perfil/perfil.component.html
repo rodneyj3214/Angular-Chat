@@ -58,8 +58,8 @@
                 <div class="chat-content px-lg-8" style="background: #ebebeb !important;">
                     <form [formGroup]="formPerfilIn" (ngSubmit)="perfilForm()">
                         <div class="container-xxl py-6 py-lg-10">
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                Se guardó
+                            <div *ngIf="msm_success" class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{msm_success}}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -91,7 +91,8 @@
                                             data-parent="#profile-settings">
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <img [src]="imgselected || url+'usuarios/img/'+datos_user.imagen"  class="rounded" style="width: 150px;display:block;
+                                                    <img [src]="imgselected || url+'usuarios/img/'+datos_user.imagen"
+                                                        class="rounded" style="width: 150px;display:block;
                                                     margin:auto;margin-bottom: 30px">
                                                     <div class="position-relative text-center bg-secondary rounded p-6">
                                                         <div class="avatar bg-primary text-white mb-5">
@@ -100,30 +101,37 @@
                                                         <p class="small text-muted mb-0">Solo archivos jpg, gif o png.
                                                             <br> Max 3mb.
                                                         </p>
-                                                        <input id="upload-user-photo" class="d-none" type="file" (change)="imgSelected($event)">
+                                                        <input id="upload-user-photo" class="d-none" type="file"
+                                                            (change)="imgSelected($event)">
                                                         <label class="stretched-label mb-0"
                                                             for="upload-user-photo"></label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="small" for="profile-name">Nombres</label>
-                                                    <input class="form-control form-control-lg" id="profile-name"  [(ngModel)]="data.nombre"
-                                                        type="text">
+                                                    <label class="small" for="nombre">Nombres</label>
+                                                    <input pInputText class="form-control form-control-lg" id="nombre"
+                                                        formControlName="nombre" type="text">
+                                                    <div *ngIf="nombreField.errors && nombreField.touched">
+                                                        <small *ngIf="nombreField.hasError('required')"
+                                                            id="first_name-help-1" class="p-error">
+                                                            El campo es obligatorio.
+                                                        </small>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="small" for="profile-phone">Telefono</label>
-                                                    <input class="form-control form-control-lg" id="profile-phone"
-                                                        type="text">
+                                                    <input pInputText class="form-control form-control-lg" id="telefono"
+                                                        formControlName="telefono" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="small" for="profile-email">Correo Electrónico</label>
-                                                    <input class="form-control form-control-lg" readonly
-                                                        id="profile-email" type="email">
+                                                    <input pInputText class="form-control form-control-lg" readonly
+                                                        id="email" formControlName="email" type="email">
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="small" for="profile-about">Biografía</label>
-                                                    <textarea class="form-control form-control-lg" id="profile-about"
-                                                        rows="3" placeholder="Escribe sobre ti"
+                                                    <textarea class="form-control form-control-lg" id="bio"
+                                                        formControlName="bio" rows="3" placeholder="Escribe sobre ti"
                                                         data-autosize="true"></textarea>
                                                 </div>
                                             </div>
@@ -139,7 +147,7 @@
                                                 <div class="row no-gutters align-items-center">
                                                     <!-- Title -->
                                                     <div class="col">
-                                                        <h5>Configuracione</h5>
+                                                        <h5>Configuraciones</h5>
                                                         <p>Configuraciones de tu cuenta.</p>
                                                     </div>
                                                     <!-- Icon -->
@@ -160,9 +168,9 @@
                                                             <!-- Switch -->
                                                             <div class="custom-control custom-switch">
                                                                 <input type="checkbox" class="custom-control-input"
-                                                                    id="custom-switch-2">
+                                                                    id="estado" formControlName="estado">
                                                                 <label class="custom-control-label"
-                                                                    for="custom-switch-2"></label>
+                                                                    for="estado"></label>
                                                             </div>
                                                         </div>
                                                         <p>Activarr y/o desactivar estado de cuenta.</p>
@@ -196,19 +204,20 @@
                                             <div class="card-body">
                                                 <div class="form-group">
                                                     <label class="small" for="new-password">Nueva contraseña</label>
-                                                    <input id="new-password" type="password"
+                                                    <input type="password"
                                                         class="form-control form-control-lg"
-                                                        placeholder="Nueva contraseña">
-                                                    <div style="width: 100%">
+                                                        placeholder="Nueva contraseña" id="password"
+                                                        formControlName="password">
+                                                    <div *ngIf="msm_confirm_pass" style="width: 100%">
                                                         <div class="invalid-feedback" style="display: block;">
-                                                            Las contraseñas no coinciden
+                                                            {{msm_confirm_pass}}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="small" for="verify-password">Confirmación</label>
-                                                    <input id="verify-password" type="password"
-                                                        class="form-control form-control-lg"
+                                                    <label class="small" for="confirm_password">Confirmación</label>
+                                                    <input id="confirm_password" formControlName="confirm_password"
+                                                        type="password" class="form-control form-control-lg"
                                                         placeholder="Verificación de contraseña">
                                                 </div>
                                             </div>
@@ -246,7 +255,7 @@
                                                                 <i class="fe-twitter"></i>
                                                             </div>
                                                         </div>
-                                                        <input id="profile-twitter" type="text"
+                                                        <input id="twitter" formControlName="twitter" type="text"
                                                             class="form-control form-control-lg"
                                                             placeholder="Enlace de cuenta" aria-label="Username">
                                                     </div>
@@ -260,7 +269,7 @@
                                                                 <i class="fe-facebook"></i>
                                                             </div>
                                                         </div>
-                                                        <input id="profile-facebook" type="text"
+                                                        <input id="facebook" formControlName="facebook"  type="text"
                                                             class="form-control form-control-lg" placeholder="Username"
                                                             placeholder="Enlace de cuenta" aria-label="Username">
                                                     </div>
@@ -274,7 +283,7 @@
                                                                 <i class="fe-github"></i>
                                                             </div>
                                                         </div>
-                                                        <input id="profile-github" type="text"
+                                                        <input id="github" formControlName="github"  type="text"
                                                             class="form-control form-control-lg"
                                                             placeholder="Enlace de cuenta" aria-label="Username">
                                                     </div>
