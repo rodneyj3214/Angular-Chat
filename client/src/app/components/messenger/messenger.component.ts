@@ -1,6 +1,6 @@
 
 
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
 import { io } from 'socket.io-client';
 import { Router } from '@angular/router';
 import { MessageService } from 'src/app/services/message.service';
@@ -60,10 +60,11 @@ export class MessengerComponent implements OnInit {
             console.log(data);
             this.identity = data;
           }.bind(this));
-          if (data.message.de != this.de) {
-            console.log(data.message.msm);
+          console.log(response.user._id);
+          if (response.user._id != this.de) {
+            console.log('');
             Push.create(response.user.nombre, {
-              body: data.message.user.msm,
+              body: data.message.msm,
               icon: this.url + 'usuarios/img/' + response.user.imagen,
               timeout: 4000,
               onClick: function () {
@@ -71,6 +72,7 @@ export class MessengerComponent implements OnInit {
                 this.close();
               }
             });
+            console.log('Rodney 3');
             (document.getElementById('player') as any).load();
             (document.getElementById('player') as any).play();
           }
@@ -79,6 +81,11 @@ export class MessengerComponent implements OnInit {
         }
       )
       this.mensajes.push(data_all);
+    }.bind(this));
+
+    this.socket.on('get-users',function (data) {
+      console.log(data);
+      this.users = data.users;
     }.bind(this));
   }
   ngOnInit(): void {
@@ -167,16 +174,12 @@ export class MessengerComponent implements OnInit {
           response => {
             this.usuarios = response.users;
             this.socket.emit('save-users', { users: this.usuarios });
-
-
           },
           error => {
-
           }
         );
       },
       error => {
-
       }
     );
     localStorage.removeItem('token');

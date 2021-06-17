@@ -22,7 +22,7 @@ export class RegistroComponent implements OnInit {
     password: ''
   });
 
-  public socket = io('http://localhost:4201');
+  public socket = io('http://localhost:3000');
 
   constructor(private formBuilder: FormBuilder,
     private _userService: UserService,

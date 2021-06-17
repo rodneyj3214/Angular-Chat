@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   public status;
   public token;
   public identity;
-  public socket = io('http://localhost:4201');
+  public socket = io('http://localhost:3000');
   public usuarios;
 
   formLoginIn = this.formBuilder.group({

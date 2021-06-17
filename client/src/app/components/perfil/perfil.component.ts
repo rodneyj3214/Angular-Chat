@@ -16,7 +16,7 @@ interface HtmlInputEvent extends Event {
 })
 export class PerfilComponent implements OnInit {
 
-  public socket = io('http://localhost:4201');
+  public socket = io('http://localhost:3000');
   public identity;
   public url;
   public de;
