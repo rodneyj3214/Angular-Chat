@@ -4,7 +4,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { io } from 'socket.io-client';
 import { UserService } from 'src/app/services/user.service';
-import {environment} from '../../../environments/environment';
+import { SocketService } from 'src/app/services/socket.service';
+import { environment } from '../../../environments/environment';
 
 interface HtmlInputEvent extends Event {
   target: HTMLInputElement & EventTarget;
@@ -16,7 +17,6 @@ interface HtmlInputEvent extends Event {
 })
 export class PerfilComponent implements OnInit {
   API_URL: string = environment.URL;
-  public socket = io(this.API_URL);
   public identity;
   public url;
   public de;
@@ -44,7 +44,7 @@ export class PerfilComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private _userService: UserService,
     private _router: Router,
-    private sanitizer: DomSanitizer
+    private socket: SocketService 
   ) {
     this.identity = this._userService.getIdentity();
     this.url = this.API_URL + "api/";
@@ -169,14 +169,14 @@ export class PerfilComponent implements OnInit {
             github: this.formPerfilIn.value.github,
             estado: this.formPerfilIn.value.estado,
           }
-          this.socket.emit('save-identity', { identity: this.data_send });
+          this.socket.io.emit('save-identity', { identity: this.data_send });
           this._userService.update_config(this.data_send).subscribe(
             response => {
               this.msm_success = 'Se actualizó su perfil con exito';
               this._userService.listar('').subscribe(
                 response => {
                   this.usuarios = response.users;
-                  this.socket.emit('save-users', { users: this.usuarios });
+                  this.socket.io.emit('save-users', { users: this.usuarios });
                 },
                 errorr => {
                 }
@@ -205,7 +205,7 @@ export class PerfilComponent implements OnInit {
             this._userService.listar('').subscribe(
               response => {
                 this.usuarios = response.users;
-                this.socket.emit('save-users', { users: this.usuarios });
+                this.socket.io.emit('save-users', { users: this.usuarios });
               },
               errorr => {
               }

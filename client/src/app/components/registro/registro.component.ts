@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-registro',
@@ -17,14 +17,12 @@ export class RegistroComponent implements OnInit {
   API_URL: string = environment.URL;
 
   public user;
-  
+
   formRegistroIn = this.formBuilder.group({
     nombre: '',
     email: '',
     password: ''
   });
-
-  public socket = io(this.API_URL);
 
   constructor(private formBuilder: FormBuilder,
     private _userService: UserService,
@@ -50,8 +48,5 @@ export class RegistroComponent implements OnInit {
     );
     console.log("Rodney");
     console.warn('Your order has been submitted', this.formRegistroIn.value);
-
   }
-
-
 }

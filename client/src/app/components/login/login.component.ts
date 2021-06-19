@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { io } from "socket.io-client";
 import { FormBuilder } from '@angular/forms';
 
 import { User } from '../../models/models.index';
 import { UserService } from "../../services/user.service";
 import { Router } from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { SocketService } from 'src/app/services/socket.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,6 @@ export class LoginComponent implements OnInit {
   public status;
   public token;
   public identity;
-  public socket = io(this.API_URL);
   public usuarios;
 
   formLoginIn = this.formBuilder.group({
@@ -31,6 +30,7 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private _userService: UserService,
     private _router: Router,
+    private socket: SocketService,
   ) {
     this.identity = this._userService.getIdentity();
   }
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
                   this._userService.listar('').subscribe(
                     response => {
                       this.usuarios = response.users;
-                      this.socket.emit('save-users', { users: this.usuarios });
+                      this.socket.io.emit('save-users', { users: this.usuarios });
                     },
                     error => {
                     }

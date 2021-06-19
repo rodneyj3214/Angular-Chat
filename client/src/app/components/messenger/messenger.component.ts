@@ -5,7 +5,8 @@ import { io } from 'socket.io-client';
 import { Router } from '@angular/router';
 import { MessageService } from 'src/app/services/message.service';
 import { UserService } from 'src/app/services/user.service';
-import {environment} from '../../../environments/environment';
+import { SocketService } from 'src/app/services/socket.service';
+import { environment } from '../../../environments/environment';
 
 import { Message } from 'src/app/models/message';
 import Push from "push.js"
@@ -20,12 +21,12 @@ export class MessengerComponent implements OnInit {
   API_URL: string = environment.URL;
   @ViewChild('scrollMe', { static: false }) private myScrollContainer: ElementRef;
 
-  
+
   public identity: any = {};
   public de;
   public url;
   public data_message;
-  public socket = io(this.API_URL);
+
   public usuarios: Array<any> = [];
   public mensajes;
   public message;
@@ -43,12 +44,13 @@ export class MessengerComponent implements OnInit {
    */
   constructor(private _userService: UserService,
     private _messageService: MessageService,
-    private _router: Router
+    private _router: Router,
+    private socket: SocketService 
   ) {
     this.identity = this._userService.getIdentity();
 
     this.url = this.API_URL + "api/";
-    this.socket.on('new-message', function (data) {
+    this.socket.io.on('new-message', function (data) {
       var data_all = {
         de: data.message.de,
         para: data.message.para,
@@ -57,7 +59,7 @@ export class MessengerComponent implements OnInit {
       }
       this._userService.get_user(data.message.de).subscribe(
         response => {
-          this.socket.on('get-identity', function (data) {
+          this.socket.io.on('get-identity', function (data) {
             console.log(data);
             this.identity = data;
           }.bind(this));
@@ -84,7 +86,7 @@ export class MessengerComponent implements OnInit {
       this.mensajes.push(data_all);
     }.bind(this));
 
-    this.socket.on('get-users',function (data) {
+    this.socket.io.on('get-users', function (data) {
       console.log(data);
       this.users = data.users;
     }.bind(this));
@@ -102,11 +104,11 @@ export class MessengerComponent implements OnInit {
         error => {
         }
       );
-      
-      this.socket.on('get-user', function (data) {
+
+      this.socket.io.on('get-user', function (data) {
         this.usuarios.push(data.user);
       }.bind(this));
-      this.socket.on('get-users', function (data) {
+      this.socket.io.on('get-users', function (data) {
         this.usuarios = data.users.users;
       }.bind(this));
     }
@@ -120,9 +122,8 @@ export class MessengerComponent implements OnInit {
     } catch (err) { }
   }
 
-  
-  listar(para) {
 
+  listar(para) {
     this._userService.get_messages(para, this.de).subscribe(
       response => {
         this.mensajes = response.messages;
@@ -134,8 +135,6 @@ export class MessengerComponent implements OnInit {
     this._userService.get_user(para).subscribe(
       response => {
         this.usuario_select = response.user;
-
-
       },
       error => {
 
@@ -151,7 +150,7 @@ export class MessengerComponent implements OnInit {
     this._messageService.send_message(this.message).subscribe(
       response => {
         //SEND MESSAGE
-        this.socket.emit('save-message', this.message);
+        this.socket.io.emit('save-message', this.message);
 
         this.scrollToBottom();
         this.text = "";
@@ -174,7 +173,7 @@ export class MessengerComponent implements OnInit {
         this._userService.listar('').subscribe(
           response => {
             this.usuarios = response.users;
-            this.socket.emit('save-users', { users: this.usuarios });
+            this.socket.io.emit('save-users', { users: this.usuarios });
           },
           error => {
           }
