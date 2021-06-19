@@ -3,5 +3,6 @@ resp/
 
 server/uploads/perfiles/*
 !server/uploads/perfiles/images.md
+!server/uploads/perfiles/default.jpg
 
 server/node_modules/
