@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import { Router } from '@angular/router';
 import { MessageService } from 'src/app/services/message.service';
 import { UserService } from 'src/app/services/user.service';
+import {environment} from '../../../environments/environment';
 
 import { Message } from 'src/app/models/message';
 import Push from "push.js"
@@ -16,7 +17,7 @@ import { HttpHeaders } from '@angular/common/http';
   styleUrls: ['./messenger.component.css']
 })
 export class MessengerComponent implements OnInit {
-
+  API_URL: string = environment.URL;
   @ViewChild('scrollMe', { static: false }) private myScrollContainer: ElementRef;
 
   
@@ -24,7 +25,7 @@ export class MessengerComponent implements OnInit {
   public de;
   public url;
   public data_message;
-  public socket = io('http://localhost:3000');
+  public socket = io(this.API_URL);
   public usuarios: Array<any> = [];
   public mensajes;
   public message;
@@ -46,7 +47,7 @@ export class MessengerComponent implements OnInit {
   ) {
     this.identity = this._userService.getIdentity();
 
-    this.url = "http://localhost:3000/api/";
+    this.url = this.API_URL + "api/";
     this.socket.on('new-message', function (data) {
       var data_all = {
         de: data.message.de,

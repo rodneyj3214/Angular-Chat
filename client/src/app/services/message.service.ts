@@ -2,11 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
+  API_URL: string = environment.URL;
   public url;
   public user: User;
   public token;
@@ -15,7 +17,7 @@ export class MessageService {
   constructor(
     private _http: HttpClient,
   ) {
-    this.url = "http://localhost:3000/api/";
+    this.url = this.API_URL + "api/";
   }
 
   send_message(message): Observable<any> {

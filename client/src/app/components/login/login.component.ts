@@ -5,6 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { User } from '../../models/models.index';
 import { UserService } from "../../services/user.service";
 import { Router } from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  API_URL: string = environment.URL;
 
   public user: User;
   public status;
   public token;
   public identity;
-  public socket = io('http://localhost:3000');
+  public socket = io(this.API_URL);
   public usuarios;
 
   formLoginIn = this.formBuilder.group({

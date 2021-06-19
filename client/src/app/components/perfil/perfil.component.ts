@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { io } from 'socket.io-client';
 import { UserService } from 'src/app/services/user.service';
-
+import {environment} from '../../../environments/environment';
 
 interface HtmlInputEvent extends Event {
   target: HTMLInputElement & EventTarget;
@@ -15,8 +15,8 @@ interface HtmlInputEvent extends Event {
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
-
-  public socket = io('http://localhost:3000');
+  API_URL: string = environment.URL;
+  public socket = io(this.API_URL);
   public identity;
   public url;
   public de;
@@ -47,7 +47,7 @@ export class PerfilComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {
     this.identity = this._userService.getIdentity();
-    this.url = "http://localhost:3000/api/";
+    this.url = this.API_URL + "api/";
     this.de = this.identity._id;
   }
 

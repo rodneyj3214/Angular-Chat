@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-registro',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./registro.component.css']
 })
 export class RegistroComponent implements OnInit {
+  API_URL: string = environment.URL;
 
   public user;
   
@@ -22,7 +24,7 @@ export class RegistroComponent implements OnInit {
     password: ''
   });
 
-  public socket = io('http://localhost:3000');
+  public socket = io(this.API_URL);
 
   constructor(private formBuilder: FormBuilder,
     private _userService: UserService,
